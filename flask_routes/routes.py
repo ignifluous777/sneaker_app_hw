@@ -7,12 +7,13 @@ app = Flask(__name__)
 def show_status():
     return jsonify({"status": "success"})
 
-@app.route("/view_by_lister/<lister>", methods=["GET", "POST"])
-def show_by_lister(lister):
+@app.route("/sneaklist/view_by_lister", methods=["GET", "POST"])
+def show_by_lister():
+    lister = request.get_json().get("lister")
     lister_list = SneakList.view_by_lister(lister)
     return jsonify({"Sneaker_list_by_lister": lister_list})
 
-@app.route("/list/add", methods=["POST"])
+@app.route("/sneaklist/add", methods=["POST"])
 def add_sneak():
     data = request.get_json()
     if data is None:
@@ -21,7 +22,7 @@ def add_sneak():
     success = new_listing.insert()
     return jsonify({"success": success})
 
-@app.route("/list/update", methods=["POST"])
+@app.route("/sneaklist/update", methods=["POST"])
 def update_sneak():
     data = request.get_json()
     if data is None:
@@ -30,7 +31,7 @@ def update_sneak():
     success = new_listing.update()
     return jsonify({"success": success})
 
-@app.route("/list/delete")
+@app.route("/sneaklist/delete")
 def delete_item():
     pk = request.get_json().get("pk")
     if pk is None:
@@ -38,13 +39,15 @@ def delete_item():
     success = SneakList.delete(pk)
     return jsonify({"success": success})
 
-@app.route("/view_below_price/<given_price>", methods=["GET", "POST"])
-def view_below_price(given_price):
+@app.route("/sneaklist/view_below_price", methods=["GET", "POST"])
+def view_below_price():
+    given_price = request.get_json().get("given_price")
     below_price_list = SneakList.view_below_price(given_price)
     return jsonify({"Sneaker_list_below_given_price": below_price_list})
 
-@app.route("/view_by_manufac/<manufac>", methods=["GET", "POST"])
-def view_by_manufac(manufac):
+@app.route("/sneaklist/view_by_manufac/", methods=["GET", "POST"])
+def view_by_manufac():
+    manufac = request.get_json().get("manufac")
     manufac_list = SneakList.view_by_manufac(manufac)
     return jsonify({"Sneaker_list_by_manufacturer": manufac_list})
 
