@@ -1,0 +1,47 @@
+from flask import Flask, request, jsonify
+from models.listing import Listing
+
+app = Flask(__name__)
+
+@app.route("/test", methods=["GET"])
+def show_status():
+    return jsonify({"status": "success"})
+
+@app.route("/all_items", methods=["GET"])
+def show_list():
+    whole_list = Listing.select_all()
+    # python to change data structure here                                                     
+    return jsonify({"shopping_list": whole_list})
+
+@app.route("/string/<input_string>")
+def reverse_string(input_string):
+    return jsonify({"reversed": input_string[::-1]})
+
+@app.route("/list/add", methods=["POST"])
+def add_item():
+    data = request.get_json()
+    if data is None:
+        return jsonify({"success": False})
+    new_listing = Listing(**data)
+    success = new_listing.insert()
+    return jsonify({"success": success})
+
+@app.route("/list/update")
+def update_item():
+    data = request.get_json()
+    if data is None:
+        return jsonify({"success": False})
+    new_listing = Listing(**data)
+    success = new_listing.update()
+    return jsonify({"success": success})
+
+@app.route("/list/delete")
+def delete_item():
+    pk = request.get_json().get("pk")
+    if pk is None:
+        return jsonify({"success": False})
+    success = Listing.delete(pk)
+    return jsonify({"success": success})
+
+if __name__ == "__main__":
+    app.run()
